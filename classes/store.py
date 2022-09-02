@@ -1,14 +1,16 @@
+from typing import Dict
+
 from classes.abstract_storage import AbstractStorage
+from classes.base_storage import BaseStorage
 
 
-class Store(AbstractStorage):
+class Store(BaseStorage):
 
-    def __init__(self, capacity: int = 100):
-        self._capacity = capacity
-        self._items = {}
+    def __init__(self, items: Dict, quantity: int = 100):
+        super().__init__(items, quantity)
 
-    def __repr__(self):
-        return f"{self._items}: {self._capacity}"
+        def __repr__(self):
+            return f"{self.items}: {self.quantity}"
 
     @property
     def items(self):

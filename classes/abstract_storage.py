@@ -12,15 +12,15 @@ class AbstractStorage(ABC):
         pass
 
     @abstractmethod
-    def add(self):
+    def add(self, name: str, amount: int) -> None:
         pass
 
     @abstractmethod
-    def remove(self):
+    def remove(self, name: str, amount: int) -> None:
         pass
 
     @abstractmethod
-    def get_free_space(self):
+    def get_free_space(self) -> int:
         pass
 
     @abstractmethod

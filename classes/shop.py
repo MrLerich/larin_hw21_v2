@@ -12,14 +12,6 @@ class Shop(BaseStorage):
         return f"{self.items}: {self.quantity}"
 
 
-    @property
-    def items(self):
-        return self._items
-
-    @property
-    def capacity(self):
-        return self._capacity
-
     def add(self, title: str, quantity: int):
         if self._items.get(title):
             self._items[title] += quantity

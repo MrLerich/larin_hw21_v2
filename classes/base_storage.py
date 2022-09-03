@@ -1,7 +1,7 @@
 from typing import Dict
 
 from classes.abstract_storage import AbstractStorage
-from exceptions import NotEnoughSpace, NotEnoughProducts
+from classes.exceptions import NotEnoughSpace, NotEnoughProducts
 
 
 class BaseStorage(AbstractStorage):
@@ -14,17 +14,17 @@ class BaseStorage(AbstractStorage):
     def add(self, name: str, amount: int):
         """добавляет товар"""
         # если места на складе меньше чем товара
-        if self.get_free_space() < amount
+        if self.get_free_space() < amount:
             raise NotEnoughSpace  # если места нет ошибка недостаточно места
 
         if name in self.__items:  # если уже был товар плюсуем количество
             self.__items[name] += amount
 
         else:  # если товара не было раньше просто заводим количество
-            self.__items[name] += amount
+            self.__items[name] = amount
 
     def remove(self, name: str, amount: int) -> None:
-        """проверяет что товара достаточно на складе"""
+        """вычитает позиции товара со склада при заказе в магазин"""
         if name not in self.__items or self.__items[name] < amount:
             # если товара нет вообще либо товара не хватает
             raise NotEnoughProducts  # ошибка недостаточно товара

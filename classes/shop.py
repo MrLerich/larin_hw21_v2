@@ -1,7 +1,7 @@
 from typing import Dict
 
 from classes.base_storage import BaseStorage
-from exceptions import TooManyDifferentProducts
+from classes.exceptions import TooManyDifferentProducts
 
 
 class Shop(BaseStorage):

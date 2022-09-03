@@ -1,64 +1,67 @@
+from classes.courier import Courier
+from classes.exceptions import BaseError
+from classes.request import Request
 from classes.shop import Shop
 from classes.store import Store
-from classes.request import Request
 
-if __name__ == "__main__":
-    # store = Store()
-    # shop = Shop()
-    store = Store({
-        "печенька": 25,
-        "собачка": 25,
-        "елка": 25
-    })
-    shop = Shop({
-        "печенька": 2,
-        "собачка": 2,
-        "елка": 2
-    })
-    storages = {
-        "магазин": shop,
-        "склад": store
-    }
-    # todo: доделать логику
+store = Store({
+    "печенька": 25,
+    "собачка": 25,
+    "елка": 25,
+    "крокодил": 10,
+    "жратва": 10,
+    "чебурашка": 4
+})
+shop = Shop({
+    "печенька": 2,
+    "собачка": 2,
+    "елка": 2,
+    "крокодил": 1,
+    "чебурашка": 1
+})
+storages = {
+    "магазин": shop,
+    "склад": store
+}
 
-    print("Добро пожаловать!")
+
+def main():
+    print("\nДобро пожаловать!\n")
+
     while True:
-        print(f"Сейчас на складе:\n{store}")
-        print(f"Сейчас в магазине:\n{shop}")
-        action = input("Забрать товар со склада или добавить на склад? ('забрать' или 'добавить', для выхода:'стоп'\n")
-        if action.lower() == 'стоп':
+        # выводим все товары для всех хранилищ
+        for storage_name in storages:
+            print(f"Сейчас на {storage_name}:\n {storages[storage_name].get_items()}")
+
+        # забираем у пользователя запрос
+        user_typing = input(
+            "Введите запрос вида 'Доставить 3 печенька из склад в магазин'\n"
+            "(для выхода:'стоп' или 'stop'\n"
+        )
+        if user_typing.lower() in ('стоп', 'stop'):
             print("До свидания!")
             break
 
-        product = input("Введите наименование товара: ")
-        quantity = int(input("Введите количество товара: "))
+        # формируем запрос на перемещение
+        try:
+            request = Request(request=user_typing, storages=storages)
+        except BaseError as error:     #InvalidRequest, InvalidStorageName
+            print(error.message)
+            continue
 
-        if action.lower == "забрать":
-            request = Request("магазин", "склад", quantity, product)
-            if not store.check_remove(request.product, request.amount):
-                print("Такого товара нет на складе или количество меньше запрошенного")
-                continue
-            if not shop.check_add(request.product, request.amount):
-                print("В магазине недостаточно места, попробуйте что-то другое")
-                continue
+        courier = Courier(
+            request=request,
+            storages=storages
+        )
 
-            store.remove(request.product, request.amount)
-            shop.add(request.product, request.amount)
-            print("Нужное количество есть на складе")
-            print("На складе храниться:")
+        # перемещение товара
+        try:
+            courier.move()
 
-            for item in store.get_items().items():
-                print(f"{item[1]: {item[0]}}")
+        except BaseError as error:
+            print(error.message)
+            courier.cancel()
+            continue
 
-            print("В магазине храниться: ")
-            for item in shop.get_items().items():
-                print(f"{item[1]: {item[0]}}")
-
-        elif action.lower() == "добавить":
-            request = Request("магазин", "склад", quantity, product)
-            if store.check_add(request.amount):
-                store.add(request.product, request.amount)
-            else:
-                print("Не хватает на складе, попробуйте заказать меньше")
-        else:
-            print("Вы ввели неверное действие")
+if __name__ == "__main__":
+    main()

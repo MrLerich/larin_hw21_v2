@@ -16,5 +16,4 @@ class Shop(BaseStorage):
         if self.get_unique_items_count() >= 5:
             raise TooManyDifferentProducts  # ошибка слишком много униктоваров
 
-        super().add(name, amount) #остальное как в родительксом классе
-
+        super().add(name, amount)  # остальное как в родительксом классе
